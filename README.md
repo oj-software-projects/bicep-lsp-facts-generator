@@ -53,7 +53,8 @@ Optional flags:
   "capabilities_category": "networking",
   "capabilities_features": ["Microsoft.Network/virtualNetworks"],
   "meta_generatedAt": "2026-02-05T00:00:00.000Z",
-  "meta_generator": "bicep-lsp-facts-generator@0.1.0"
+  "meta_generator": "bicep-lsp-facts-generator@0.1.0",
+  "content": "virtualnetworks networking microsoft.network/virtualnetworks resourcegroup"
 }
 ```
 
@@ -61,4 +62,5 @@ Optional flags:
 
 - The generator uses the Bicep CLI JSON-RPC interface (`bicep jsonrpc`).
 - Outputs are schema-validated and serialized with stable key ordering.
+- `content` is a deterministic, tokenized search field derived from selected facts fields.
 - By default, `generatedAt` uses the source file's mtime for reproducible output; use `--generated-at` to override.

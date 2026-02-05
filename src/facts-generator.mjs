@@ -81,6 +81,14 @@ export async function generateFacts({
   }
 
   const resolvedGeneratedAt = generatedAt ?? (await getFileMtimeIso(filePath));
+  const content = buildContent({
+    componentId,
+    capabilitiesCategory: capabilities.category,
+    capabilitiesFeatures: capabilities.features ?? [],
+    scopesDefault: targetScope,
+    parameterNames: parameters.map((param) => param.name),
+    moduleNames: moduleResult.modules.map((module) => module.name),
+  });
 
   return {
     schemaVersion: "facts.v1",
@@ -99,8 +107,79 @@ export async function generateFacts({
     meta_generatedAt: resolvedGeneratedAt,
     meta_generator: generatorName,
     meta_notes: metaNotes.length ? metaNotes : undefined,
-    content: undefined,
+    content,
   };
+}
+
+function buildContent({
+  componentId,
+  capabilitiesCategory,
+  capabilitiesFeatures,
+  scopesDefault,
+  parameterNames,
+  moduleNames,
+}) {
+  const orderedParts = [
+    componentId,
+    capabilitiesCategory,
+    ...capabilitiesFeatures,
+    scopesDefault,
+  ];
+
+  const sortedParameterNames = [...parameterNames].sort((a, b) => a.localeCompare(b));
+  const sortedModuleNames = [...moduleNames].sort((a, b) => a.localeCompare(b));
+
+  orderedParts.push(...sortedParameterNames, ...sortedModuleNames);
+
+  const tokens = [];
+  for (const part of orderedParts) {
+    if (!part) {
+      continue;
+    }
+    const normalized = tokenizeContent(part);
+    if (!normalized) {
+      continue;
+    }
+    tokens.push(...normalized.split(" "));
+  }
+
+  const deduped = [];
+  const seen = new Set();
+  for (const token of tokens) {
+    if (!token || seen.has(token)) {
+      continue;
+    }
+    seen.add(token);
+    deduped.push(token);
+  }
+
+  const maxLength = 2048;
+  const limited = [];
+  let length = 0;
+
+  for (const token of deduped) {
+    if (!token) {
+      continue;
+    }
+
+    const nextLength = length === 0 ? token.length : length + 1 + token.length;
+    if (nextLength > maxLength) {
+      break;
+    }
+
+    limited.push(token);
+    length = nextLength;
+  }
+
+  return limited.join(" ");
+}
+
+function tokenizeContent(value) {
+  return String(value)
+    .toLowerCase()
+    .replace(/[^a-z0-9._/-]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 async function getFileMtimeIso(filePath) {

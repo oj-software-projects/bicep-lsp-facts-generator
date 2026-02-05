@@ -15,7 +15,8 @@
     "outputsJson",
     "capabilities_category",
     "meta_generatedAt",
-    "meta_generator"
+    "meta_generator",
+    "content"
   ],
   "properties": {
     "schemaVersion": {
@@ -27,16 +28,13 @@
       "description": "Stable identifier of the infrastructure component (e.g. vnet, vm, aks)."
     },
     "source_path": {
-      "type": "string",
-      "description": "Path or identifier of the original Bicep file."
+      "type": "string"
     },
     "source_hash": {
-      "type": "string",
-      "description": "Content hash of the Bicep source for traceability."
+      "type": "string"
     },
     "source_compilerVersion": {
-      "type": "string",
-      "description": "Version of the Bicep CLI / Language Server used."
+      "type": "string"
     },
     "scopes_allowed": {
       "type": "array",
@@ -65,7 +63,6 @@
     },
     "parametersJson": {
       "type": "array",
-      "description": "Public input contract of the template.",
       "items": {
         "type": "object",
         "required": [
@@ -136,7 +133,6 @@
     },
     "outputsJson": {
       "type": "array",
-      "description": "Public outputs exposed by the template.",
       "items": {
         "type": "object",
         "required": [
@@ -167,7 +163,6 @@
     },
     "modulesJson": {
       "type": "array",
-      "description": "High-level module dependencies (interface-level only).",
       "items": {
         "type": "object",
         "required": [
@@ -203,8 +198,7 @@
       }
     },
     "capabilities_category": {
-      "type": "string",
-      "description": "High-level classification (networking, compute, data, security, etc.)"
+      "type": "string"
     },
     "capabilities_features": {
       "type": "array",
@@ -217,8 +211,7 @@
       "format": "date-time"
     },
     "meta_generator": {
-      "type": "string",
-      "description": "Tool that generated the facts file."
+      "type": "string"
     },
     "meta_notes": {
       "type": "array",
@@ -228,7 +221,9 @@
     },
     "content": {
       "type": "string",
-      "description": "Optional full-text field to support search queries."
+      "minLength": 1,
+      "maxLength": 2048,
+      "description": "Deterministic retrieval field: space-separated lowercase tokens derived only from componentId, capabilities_category, capabilities_features, scopes_default, parameter names, and module names. No prose, no descriptions, no values."
     }
   },
   "additionalProperties": false
