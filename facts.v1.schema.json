@@ -1,18 +1,21 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.org/schemas/facts.v1.schema.json",
-  "title": "Infrastructure Facts Schema v1",
-  "description": "Normalized, machine-readable contract describing the usable interface of a Bicep template.",
+  "title": "Infrastructure Facts Schema v1 (Search Contract)",
+  "description": "Normalized, search-friendly contract describing the usable interface of a Bicep template.",
   "type": "object",
   "required": [
     "schemaVersion",
     "componentId",
-    "source",
-    "scopes",
-    "parameters",
-    "outputs",
-    "capabilities",
-    "meta"
+    "source_path",
+    "source_hash",
+    "scopes_allowed",
+    "scopes_default",
+    "parametersJson",
+    "outputsJson",
+    "capabilities_category",
+    "meta_generatedAt",
+    "meta_generator"
   ],
   "properties": {
     "schemaVersion": {
@@ -21,64 +24,46 @@
     },
     "componentId": {
       "type": "string",
-      "description": "Stable identifier of the infrastructure component (e.g. vnet, aks, sql)."
+      "description": "Stable identifier of the infrastructure component (e.g. vnet, vm, aks)."
     },
-    "source": {
-      "type": "object",
-      "required": [
-        "path",
-        "hash"
-      ],
-      "properties": {
-        "path": {
-          "type": "string",
-          "description": "Path or identifier of the original Bicep file."
-        },
-        "hash": {
-          "type": "string",
-          "description": "Content hash of the Bicep source for traceability."
-        },
-        "compilerVersion": {
-          "type": "string",
-          "description": "Version of the Bicep CLI / Language Server used."
-        }
+    "source_path": {
+      "type": "string",
+      "description": "Path or identifier of the original Bicep file."
+    },
+    "source_hash": {
+      "type": "string",
+      "description": "Content hash of the Bicep source for traceability."
+    },
+    "source_compilerVersion": {
+      "type": "string",
+      "description": "Version of the Bicep CLI / Language Server used."
+    },
+    "scopes_allowed": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "resourceGroup",
+          "subscription",
+          "managementGroup",
+          "tenant"
+        ]
       }
     },
-    "scopes": {
-      "type": "object",
-      "required": [
-        "allowed",
-        "default"
-      ],
-      "properties": {
-        "allowed": {
-          "type": "array",
-          "items": {
-            "enum": [
-              "resourceGroup",
-              "subscription",
-              "managementGroup",
-              "tenant"
-            ]
-          }
-        },
-        "default": {
-          "enum": [
-            "resourceGroup",
-            "subscription",
-            "managementGroup",
-            "tenant"
-          ]
-        },
-        "notes": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        }
+    "scopes_default": {
+      "enum": [
+        "resourceGroup",
+        "subscription",
+        "managementGroup",
+        "tenant"
+      ]
+    },
+    "scopes_notes": {
+      "type": "array",
+      "items": {
+        "type": "string"
       }
     },
-    "parameters": {
+    "parametersJson": {
       "type": "array",
       "description": "Public input contract of the template.",
       "items": {
@@ -109,15 +94,11 @@
               "none",
               "literal",
               "expression"
-            ],
-            "description": "How the default value is defined."
+            ]
           },
-          "default": {
-            "description": "Literal default value, if defaultKind is 'literal'."
-          },
+          "default": {},
           "defaultExpression": {
-            "type": "string",
-            "description": "Expression default, if defaultKind is 'expression'."
+            "type": "string"
           },
           "constraints": {
             "type": "object",
@@ -148,13 +129,12 @@
             "type": "string"
           },
           "sensitive": {
-            "type": "boolean",
-            "description": "Indicates whether the value should be treated as secret."
+            "type": "boolean"
           }
         }
       }
     },
-    "outputs": {
+    "outputsJson": {
       "type": "array",
       "description": "Public outputs exposed by the template.",
       "items": {
@@ -177,8 +157,7 @@
             ]
           },
           "itemType": {
-            "type": "string",
-            "description": "Item type for arrays, if applicable."
+            "type": "string"
           },
           "description": {
             "type": "string"
@@ -186,9 +165,9 @@
         }
       }
     },
-    "modules": {
+    "modulesJson": {
       "type": "array",
-      "description": "High-level module dependencies used by this template.",
+      "description": "High-level module dependencies (interface-level only).",
       "items": {
         "type": "object",
         "required": [
@@ -210,64 +189,46 @@
               "tenant"
             ]
           },
-          "condition": {
-            "type": "object",
-            "properties": {
-              "kind": {
-                "enum": [
-                  "always",
-                  "conditional",
-                  "foreach"
-                ]
-              },
-              "dependsOnParameter": {
-                "type": "string"
-              }
-            }
-          }
-        }
-      }
-    },
-    "capabilities": {
-      "type": "object",
-      "required": [
-        "category"
-      ],
-      "properties": {
-        "category": {
-          "type": "string",
-          "description": "High-level classification (networking, compute, data, security, etc.)"
-        },
-        "features": {
-          "type": "array",
-          "items": {
+          "conditionKind": {
+            "enum": [
+              "always",
+              "conditional",
+              "foreach"
+            ]
+          },
+          "conditionDependsOn": {
             "type": "string"
           }
         }
       }
     },
-    "meta": {
-      "type": "object",
-      "required": [
-        "generatedAt",
-        "generator"
-      ],
-      "properties": {
-        "generatedAt": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "generator": {
-          "type": "string",
-          "description": "Tool that generated the facts file."
-        },
-        "notes": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        }
+    "capabilities_category": {
+      "type": "string",
+      "description": "High-level classification (networking, compute, data, security, etc.)"
+    },
+    "capabilities_features": {
+      "type": "array",
+      "items": {
+        "type": "string"
       }
+    },
+    "meta_generatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "meta_generator": {
+      "type": "string",
+      "description": "Tool that generated the facts file."
+    },
+    "meta_notes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "content": {
+      "type": "string",
+      "description": "Optional full-text field to support search queries."
     }
   },
   "additionalProperties": false

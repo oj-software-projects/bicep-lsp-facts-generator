@@ -85,24 +85,21 @@ export async function generateFacts({
   return {
     schemaVersion: "facts.v1",
     componentId,
-    source: {
-      path: relativePath,
-      hash,
-      compilerVersion,
-    },
-    scopes: {
-      allowed: [targetScope],
-      default: targetScope,
-    },
-    parameters,
-    outputs,
-    modules: moduleResult.modules.length ? moduleResult.modules : undefined,
-    capabilities,
-    meta: {
-      generatedAt: resolvedGeneratedAt,
-      generator: generatorName,
-      notes: metaNotes.length ? metaNotes : undefined,
-    },
+    source_path: relativePath,
+    source_hash: hash,
+    source_compilerVersion: compilerVersion,
+    scopes_allowed: [targetScope],
+    scopes_default: targetScope,
+    scopes_notes: undefined,
+    parametersJson: parameters,
+    outputsJson: outputs,
+    modulesJson: moduleResult.modules.length ? moduleResult.modules : undefined,
+    capabilities_category: capabilities.category,
+    capabilities_features: capabilities.features ?? undefined,
+    meta_generatedAt: resolvedGeneratedAt,
+    meta_generator: generatorName,
+    meta_notes: metaNotes.length ? metaNotes : undefined,
+    content: undefined,
   };
 }
 
@@ -257,9 +254,8 @@ function buildModules(template, graph) {
       name: node.name,
       path: pathValue,
       scope: scope ?? undefined,
-      condition: {
-        kind: conditionKind,
-      },
+      conditionKind,
+      conditionDependsOn: undefined,
     });
   }
 

@@ -43,25 +43,17 @@ Optional flags:
 {
   "schemaVersion": "facts.v1",
   "componentId": "virtualnetworks",
-  "source": {
-    "path": "bicep/vnet/vnet.bicep",
-    "hash": "<sha256>",
-    "compilerVersion": "0.29.1"
-  },
-  "scopes": {
-    "allowed": ["resourceGroup"],
-    "default": "resourceGroup"
-  },
-  "parameters": [],
-  "outputs": [],
-  "capabilities": {
-    "category": "networking",
-    "features": ["Microsoft.Network/virtualNetworks"]
-  },
-  "meta": {
-    "generatedAt": "2026-02-05T00:00:00.000Z",
-    "generator": "bicep-lsp-facts-generator@0.1.0"
-  }
+  "source_path": "bicep/vnet/vnet.bicep",
+  "source_hash": "<sha256>",
+  "source_compilerVersion": "0.40.2",
+  "scopes_allowed": ["resourceGroup"],
+  "scopes_default": "resourceGroup",
+  "parametersJson": [],
+  "outputsJson": [],
+  "capabilities_category": "networking",
+  "capabilities_features": ["Microsoft.Network/virtualNetworks"],
+  "meta_generatedAt": "2026-02-05T00:00:00.000Z",
+  "meta_generator": "bicep-lsp-facts-generator@0.1.0"
 }
 ```
 
