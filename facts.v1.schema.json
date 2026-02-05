@@ -1,0 +1,274 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/schemas/facts.v1.schema.json",
+  "title": "Infrastructure Facts Schema v1",
+  "description": "Normalized, machine-readable contract describing the usable interface of a Bicep template.",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "componentId",
+    "source",
+    "scopes",
+    "parameters",
+    "outputs",
+    "capabilities",
+    "meta"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "const": "facts.v1"
+    },
+    "componentId": {
+      "type": "string",
+      "description": "Stable identifier of the infrastructure component (e.g. vnet, aks, sql)."
+    },
+    "source": {
+      "type": "object",
+      "required": [
+        "path",
+        "hash"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "Path or identifier of the original Bicep file."
+        },
+        "hash": {
+          "type": "string",
+          "description": "Content hash of the Bicep source for traceability."
+        },
+        "compilerVersion": {
+          "type": "string",
+          "description": "Version of the Bicep CLI / Language Server used."
+        }
+      }
+    },
+    "scopes": {
+      "type": "object",
+      "required": [
+        "allowed",
+        "default"
+      ],
+      "properties": {
+        "allowed": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "resourceGroup",
+              "subscription",
+              "managementGroup",
+              "tenant"
+            ]
+          }
+        },
+        "default": {
+          "enum": [
+            "resourceGroup",
+            "subscription",
+            "managementGroup",
+            "tenant"
+          ]
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "parameters": {
+      "type": "array",
+      "description": "Public input contract of the template.",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "type",
+          "required"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "enum": [
+              "string",
+              "int",
+              "bool",
+              "array",
+              "object"
+            ]
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "defaultKind": {
+            "enum": [
+              "none",
+              "literal",
+              "expression"
+            ],
+            "description": "How the default value is defined."
+          },
+          "default": {
+            "description": "Literal default value, if defaultKind is 'literal'."
+          },
+          "defaultExpression": {
+            "type": "string",
+            "description": "Expression default, if defaultKind is 'expression'."
+          },
+          "constraints": {
+            "type": "object",
+            "properties": {
+              "allowed": {
+                "type": "array",
+                "items": {}
+              },
+              "minValue": {
+                "type": "number"
+              },
+              "maxValue": {
+                "type": "number"
+              },
+              "minLength": {
+                "type": "integer"
+              },
+              "maxLength": {
+                "type": "integer"
+              },
+              "pattern": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          },
+          "description": {
+            "type": "string"
+          },
+          "sensitive": {
+            "type": "boolean",
+            "description": "Indicates whether the value should be treated as secret."
+          }
+        }
+      }
+    },
+    "outputs": {
+      "type": "array",
+      "description": "Public outputs exposed by the template.",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "type"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "enum": [
+              "string",
+              "int",
+              "bool",
+              "array",
+              "object"
+            ]
+          },
+          "itemType": {
+            "type": "string",
+            "description": "Item type for arrays, if applicable."
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "modules": {
+      "type": "array",
+      "description": "High-level module dependencies used by this template.",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "path"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "scope": {
+            "enum": [
+              "resourceGroup",
+              "subscription",
+              "managementGroup",
+              "tenant"
+            ]
+          },
+          "condition": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "enum": [
+                  "always",
+                  "conditional",
+                  "foreach"
+                ]
+              },
+              "dependsOnParameter": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "capabilities": {
+      "type": "object",
+      "required": [
+        "category"
+      ],
+      "properties": {
+        "category": {
+          "type": "string",
+          "description": "High-level classification (networking, compute, data, security, etc.)"
+        },
+        "features": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "meta": {
+      "type": "object",
+      "required": [
+        "generatedAt",
+        "generator"
+      ],
+      "properties": {
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "generator": {
+          "type": "string",
+          "description": "Tool that generated the facts file."
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}
